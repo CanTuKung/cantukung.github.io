@@ -1,7 +1,24 @@
 const sectionIds = ["about", "education", "research", "publications", "interests", "news", "contact"];
 const navLinks = document.querySelectorAll('.nav-link');
 
-// Scroll-spy for desktop and mobile navigation
+const getHeaderOffset = () => {
+  const header = document.querySelector('.top-header');
+  return header ? header.offsetHeight + 16 : 0;
+};
+
+navLinks.forEach((link) => {
+  link.addEventListener('click', (event) => {
+    const href = link.getAttribute('href');
+    if (!href || !href.startsWith('#')) return;
+    const target = document.querySelector(href);
+    if (!target) return;
+
+    event.preventDefault();
+    const top = target.getBoundingClientRect().top + window.scrollY - getHeaderOffset();
+    window.scrollTo({ top, behavior: 'smooth' });
+  });
+});
+
 const sectionObserver = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
@@ -13,7 +30,7 @@ const sectionObserver = new IntersectionObserver(
       });
     });
   },
-  { rootMargin: '-40% 0px -45% 0px', threshold: 0.01 }
+  { rootMargin: '-35% 0px -55% 0px', threshold: 0.01 }
 );
 
 sectionIds.forEach((id) => {
@@ -21,7 +38,6 @@ sectionIds.forEach((id) => {
   if (section) sectionObserver.observe(section);
 });
 
-// Gentle reveal animation for sections
 const revealElements = document.querySelectorAll('.reveal');
 const revealObserver = new IntersectionObserver(
   (entries) => {

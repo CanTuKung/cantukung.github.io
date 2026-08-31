@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="420" viewBox="0 0 900 420" role="img" aria-label="News placeholder">
+  <rect width="900" height="420" fill="#edf2fb"/>
+  <rect x="50" y="50" width="800" height="320" fill="#dbe5fa"/>
+  <text x="450" y="230" fill="#0a1f44" font-family="Arial, sans-serif" font-size="30" text-anchor="middle">OPTIONAL NEWS IMAGE</text>
+</svg>

@@ -1,10 +1,10 @@
 const sectionIds = ["about", "education", "research", "publications", "interests", "news", "contact"];
 const navLinks = document.querySelectorAll('.nav-link');
+const header = document.getElementById('top-header');
+const revealBlocks = document.querySelectorAll('.reveal-block');
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const getHeaderOffset = () => {
-  const header = document.querySelector('.top-header');
-  return header ? header.offsetHeight + 16 : 0;
-};
+const getHeaderOffset = () => (header ? header.offsetHeight + 12 : 0);
 
 navLinks.forEach((link) => {
   link.addEventListener('click', (event) => {
@@ -15,7 +15,7 @@ navLinks.forEach((link) => {
 
     event.preventDefault();
     const top = target.getBoundingClientRect().top + window.scrollY - getHeaderOffset();
-    window.scrollTo({ top, behavior: 'smooth' });
+    window.scrollTo({ top, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
   });
 });
 
@@ -30,7 +30,7 @@ const sectionObserver = new IntersectionObserver(
       });
     });
   },
-  { rootMargin: '-35% 0px -55% 0px', threshold: 0.01 }
+  { rootMargin: '-30% 0px -55% 0px', threshold: 0.02 }
 );
 
 sectionIds.forEach((id) => {
@@ -38,17 +38,27 @@ sectionIds.forEach((id) => {
   if (section) sectionObserver.observe(section);
 });
 
-const revealElements = document.querySelectorAll('.reveal');
-const revealObserver = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
+if (!prefersReducedMotion) {
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('in-view');
         revealObserver.unobserve(entry.target);
-      }
-    });
-  },
-  { threshold: 0.12 }
-);
+      });
+    },
+    { threshold: 0.18 }
+  );
 
-revealElements.forEach((element) => revealObserver.observe(element));
+  revealBlocks.forEach((block) => revealObserver.observe(block));
+} else {
+  revealBlocks.forEach((block) => block.classList.add('in-view'));
+}
+
+const updateHeaderState = () => {
+  if (!header) return;
+  header.classList.toggle('scrolled', window.scrollY > 16);
+};
+
+updateHeaderState();
+window.addEventListener('scroll', updateHeaderState, { passive: true });
